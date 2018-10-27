@@ -1,0 +1,3 @@
+from .problem_frequency import FrequencyProblem
+from .problem_bimodal import BimodalProblem
+from .problem_fast_cantilever import FastCantileverProblem
