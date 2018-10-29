@@ -1,8 +1,7 @@
 import numpy as np
-from .topology_interface import Topology
 
 
-class RegularVShaped(Topology):
+class RegularVShaped(object):
     
     def __init__(self, params):
         """
@@ -24,8 +23,12 @@ class RegularVShaped(Topology):
         self.topology = None
         self.connectivity_penalty = 0.0
         self.is_connected = True
+        self.xtip = 0
+        self.ytip = 0
         
-        
+    def get_params(self):
+        return (self.topology, self.a, self.b, self.xtip, self.ytip)
+    
     def update_topology(self, xs):
         
         # Range of xs is [-1,1], make range [0,1].
@@ -53,7 +56,8 @@ class RegularVShaped(Topology):
         topology[nelx - 1, nely - 1] = 1  # Tip element.
 
         self.topology = np.vstack((topology, np.flipud(topology)))
-        
+        self.xtip = 2 * self.a * nelx
+        self.ytip = 2 * self.b * (nely - 0.05)
         
     def _init_grid(self):
         

@@ -1,8 +1,7 @@
 import numpy as np
 from ..analysis_connectivity import connectivity_penalization
-from .topology_interface import Topology
 
-class CompactTopology(Topology):
+class CompactTopology(object):
     """
     References:
         
@@ -100,12 +99,11 @@ class CompactTopology(Topology):
         self._is_connected = True if n_isle == 0 else False
         
         nelx, nely = self._dim_elems
-        #self.xtip = 1e6 * (2 * self.a * nelx)
-        #self.ytip = 1e6 * (2 * self.b * (nely - 0.05))
         self.xtip = 2 * self.a * nelx
         self.ytip = 2 * self.b * (nely - 0.05)
         
-        
+    def get_params(self):
+        return (self.topology, self.a, self.b, self.xtip, self.ytip)   
 
 
     def _gaussian(self, x, y):

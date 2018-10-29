@@ -1,8 +1,7 @@
 import numpy as np
-from .topology_interface import Topology
 
 
-class RegularSteppedTopology(Topology):
+class RegularSteppedTopology(object):
     
     def __init__(self, params):
         """
@@ -31,6 +30,15 @@ class RegularSteppedTopology(Topology):
         self.topology = None
         self.connectivity_penalty = 0.0
         self.is_connected = True
+        self.xtip = 0
+        self.ytip = 0
+        
+    def get_params(self):
+        return (self.topology,
+                self.a,
+                self.b,
+                self.xtip,
+                self.ytip)
         
         
     def update_topology(self, xs):
@@ -54,3 +62,5 @@ class RegularSteppedTopology(Topology):
         topology = (in1x & in1y) | (in2x & in2y)
 
         self.topology = np.vstack((topology, np.flipud(topology)))
+        self.xtip = 2 * self.a * nelx
+        self.ytip = 2 * self.b * (nely - 0.05)

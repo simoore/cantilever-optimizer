@@ -1,8 +1,7 @@
 import numpy as np
-from .topology_interface import Topology
 
 
-class RegularSplitTopology(Topology):
+class RegularSplitTopology(object):
     
     def __init__(self, params):
 
@@ -16,7 +15,8 @@ class RegularSplitTopology(Topology):
         self._x = ii.T + 0.5
         self._y = jj.T + 0.5
         
-    
+    def get_params(self):
+        return (self.topology, self.a, self.b, self.xtip, self.ytip)
     
     def update_topology(self, xs):
         

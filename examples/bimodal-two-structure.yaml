@@ -1,0 +1,17 @@
+---
+generations: 60
+num_individuals: 300
+topology_class: two_structure
+topology_params:
+    nelx: 40
+    nely: 80
+    a0: 5.0
+    b0: 5.0
+problem_class: bimodal
+problem_params:
+    f1: 50.0e3
+    f2: 1000.0e3
+    k2: 3000.0
+    k1: 0.0
+    type: frequency_minimization
+...

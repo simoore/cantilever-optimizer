@@ -1,8 +1,7 @@
 import numpy as np
-from .topology_interface import Topology
 
 
-class NewSteppedTopology(Topology):
+class NewSteppedTopology(object):
     
     def __init__(self, params):
         """

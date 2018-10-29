@@ -11,29 +11,29 @@ class FastCantileverProblem(object):
     self.ind_size
     self.name
     """
-    
+
     def __init__(self, params, topology_factory):
-        
+
         self.k1 = params['k1']
         self.topology_factory = topology_factory
         self.material = microfem.SoiMumpsMaterial()
         self.ind_size = self.topology_factory.ind_size
         self.name = '--- Fast Cantilever Optimization ---'
-        
-        
+
+
     def objective_function(self, xs):
 
         self.topology_factory.update_topology(xs)
-        
+
         if self.topology_factory.is_connected is True:
-            
+
             params = self.topology_factory.get_params()
             cantilever = microfem.Cantilever(*params)
             fem = microfem.PlateFEM(self.material, cantilever)
             coords = (cantilever.xtip, cantilever.ytip)
             opr = microfem.PlateDisplacement(fem, coords).get_operator()
             mode_ident = microfem.ModeIdentification(fem, cantilever, 'plate')
-            
+
             try:
                 w, _, vall = fem.modal_analysis(1)
             except RuntimeError:
@@ -44,20 +44,20 @@ class FastCantileverProblem(object):
             wtip1 = np.asscalar(opr @ phi1)
             kfunc = lambda p, w: np.asscalar(p.T @ kuu @ p / w ** 2)
             k1 = kfunc(phi1, wtip1)
-            type1 = mode_ident.is_mode_flexural(phi1) 
-            
+            type1 = mode_ident.is_mode_flexural(phi1)
+
             if type1 is False:
                 cost = 1e8
             else:
                 cost = -f1*1e-6 if k1 < self.k1 else k1
-            
+
             return (cost,)
-        
+
         return (self.topology_factory.connectivity_penalty,)
-    
-    
+
+
     def console_output(self, xopt, image_file):
-        
+
 
         self.topology_factory.update_topology(xopt)
         topology = self.topology_factory.topology
@@ -68,14 +68,14 @@ class FastCantileverProblem(object):
         ytip = self.topology_factory.ytip
         cantilever = microfem.Cantilever(topology, a, b, xtip, ytip)
         microfem.plot_topology(cantilever, image_file)
-        
+
         if self.topology_factory.is_connected is True:
-            
+
             fem = microfem.PlateFEM(self.material, cantilever)
             coords = (cantilever.xtip, cantilever.ytip)
             opr = microfem.PlateDisplacement(fem, coords).get_operator()
             mode_ident = microfem.ModeIdentification(fem, cantilever, 'plate')
-            
+
             w, _, vall = fem.modal_analysis(3)
             freq = np.sqrt(w) / (2*np.pi)
             kuu = fem.get_stiffness_matrix(free=False)
@@ -84,7 +84,7 @@ class FastCantileverProblem(object):
             kfunc = lambda p, w: np.asscalar(p.T @ kuu @ p / w ** 2)
             ks = [kfunc(p, w) for p, w in zip(phis, wtips)]
             types = [mode_ident.is_mode_flexural(p) for p in phis]
-            
+
             tup = ('Disp', 'Freq (Hz)', 'Stiffness', 'Flexural')
             print('\n    %-15s %-15s %-15s %-10s' % tup)
             for i in range(3):

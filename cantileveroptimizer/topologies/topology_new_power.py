@@ -1,8 +1,7 @@
 import numpy as np
-from .topology_interface import Topology
 
 
-class NewPowerTopology(Topology):
+class NewPowerTopology(object):
     
     def __init__(self, params):
 
@@ -24,6 +23,8 @@ class NewPowerTopology(Topology):
         self.xtip = nelx
         self.ytip = nely
         
+    def get_params(self):
+        return (self.topology, self.a, self.b, self.xtip, self.ytip)
         
     def update_topology(self, xs):
         

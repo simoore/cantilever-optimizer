@@ -1,8 +1,7 @@
 import numpy as np
-from .topology_interface import Topology
 
 
-class NewTwoStructuresTopology(Topology):
+class NewTwoStructuresTopology(object):
     """
     Public Attributes
     -----------------

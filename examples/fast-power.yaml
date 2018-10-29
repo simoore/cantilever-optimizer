@@ -1,0 +1,13 @@
+---
+generations: 60
+num_individuals: 300
+topology_class: power
+topology_params:
+    nelx: 40
+    nely: 80
+    a0: 5.0
+    b0: 5.0
+problem_class: fast_cantilever
+problem_params:
+    k1: 10.0
+...

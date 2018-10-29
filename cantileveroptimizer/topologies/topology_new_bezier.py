@@ -1,13 +1,12 @@
 from math import floor
 import numpy as np
 from collections import namedtuple
-from .topology_interface import Topology
 
 
 Bezier = namedtuple('Bezier', 'eu1 eu2 ex1 ex2 ey1 ey2 rx ry')
 
 
-class NewBezierTopology(Topology):
+class NewBezierTopology(object):
     """
     This topology optimization factory automatrically applies symmetry and 
     connectivity between the base and tip are guaranteed. Compared to the 

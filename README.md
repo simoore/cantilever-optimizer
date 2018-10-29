@@ -5,10 +5,10 @@ targeted for use in atomic force microscopy. The code is structure to account
 for a range of different optimization problems and topology parameterizations.
 The genetic algorithm is used to search for the optimal solution.
 
-To use the software, first edit the `main()` function in `main_deap.py`. Set 
-the `filename` variable to point to a YAML configuration file which describes
-the problem. Then execute the script. To re-examine previous solutions, 
-comment out the line `opt.execute()` and uncomment the line 
+To use the software, first edit the `main()` function in `main_deap.py` shown 
+below. Set the `filename` variable to point to a YAML configuration file which 
+describes the problem. Then execute the script. To re-examine previous 
+solutions, comment out the line `opt.execute()` and uncomment the line 
 `opt.load_solution()`.
 
 ```
@@ -22,10 +22,20 @@ def main():
     return opt
 ```
 
+At completion of the optimization routine, the following files are output for 
+the above example.
+
+* `fast-new-compact-design.npy` -- The parameters of the optimal solution in a
+    binary format.
+* `fast-new-compact-design.txt` -- The parameters of the optimal solution in a
+    text format.
+* `fast-new-compact-image.png` -- An image of the optimal topology.
+8 `fast-new-compact-records.txt` -- Lists the cost function at each iteration 
+    of the optimization routine.
+
 To re-execute the optimization the `.npy` output from the previous execution
-of the script must be deleted. For the above example the file is 
-`examples/fast-new-compact-design.npy`. The YAML configuration file for a
-optimization problem is shown below.
+of the script must be deleted. The YAML configuration file for an optimization 
+problem is shown below.
 
 ```
 ---
@@ -49,10 +59,12 @@ problem_params:
 ```
 
 The parameters are:
-* `generations` -- The number of iterations of the genetic algorithm to execute.
+* `generations` -- The number of iterations of the genetic algorithm to 
+    execute.
 * `num_individuals` -- The number of solutions per iteration to examine in the 
     genetic algorithm.
-* `topology_class` -- A keyword linked to a particular topology parameterization.
+* `topology_class` -- A keyword linked to a particular topology 
+    parameterization.
 * `topology_params` -- A dictionary of parameters assocaited with a given 
     topology.
 * `problem_class` -- A keyword linked to the optimization problem.
@@ -63,16 +75,9 @@ and eight topolgies already provided with this code. To add additional problems
 and topologies create the class with the appropriate interface and modify
 the functions in `main_deap.py` called `init_problem()` and `init_topology()`
 to link the classes with a keyword.
-
-After the problem has executed, the following files are generated
 * ``
 
 # Problems
-
-Problems prefixed by `new-` have a fixed mesh size but the cantilever tip
-can change locations. Otherwise, the tip location is fixed and the mesh size
-changes.
-
 
 ## API for Problem Classes
 
@@ -96,6 +101,17 @@ The parameters are:
 
 ## The Bimodal Cantilever
 
+Bimodal cantilevers examine the dynamics of the first three modes and seek to
+set the frequency and/or stiffness of the first two flexural modes. If there
+is only one flexural mode the cost function is penalized. The parameters are
+as follows.
+
+* `stiffness_placement` -- Places the stiffness of mode 1 and mode 2 at given
+    values.
+* `frequency_placement` -- Place the frequency of mode 1 and mode 2 at given
+    values.
+* `frequency_minimization` -- Minimines the frequency of mode 2 for a given 
+    frequency of mode 1.
 
 ## The Frequency
 

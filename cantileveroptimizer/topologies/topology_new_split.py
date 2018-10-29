@@ -1,9 +1,8 @@
 import numpy as np
-from .topology_interface import Topology
 
 
-class NewSplitTopology(Topology):
-    
+class NewSplitTopology(object):
+
     def __init__(self, params):
 
         self._dim_elems = (params['nelx'], params['nely'])
@@ -13,18 +12,22 @@ class NewSplitTopology(Topology):
         self.is_connected = True
         self.connectivity_penalty = 0
         self.topology = None
-        
+        self.xtip = 0
+        self.ytip = 0
+
         nelx, nely = self._dim_elems
         ii, jj = np.meshgrid(np.arange(nelx), np.arange(nely))
         self._x = ii.T + 0.5
         self._y = jj.T + 0.5
-        
-    
+
+    def get_params(self):
+        return (self.topology, self.a, self.b, self.xtip, self.ytip)
+
     def update_topology(self, xs):
-        
+
         # Range of xs is [-1,1], make range [0,1].
         xss = [0.5*x + 0.5 for x in xs]
-        
+
         nelx, nely = self._dim_elems
         p1 = 1 + (nely - 1)*xss[0]
         p2 = (nelx - 1) - (nelx - 1)*xss[1]
@@ -34,7 +37,7 @@ class NewSplitTopology(Topology):
         p6 = p5 + (nelx - p5)*xss[5]
         p7 = p3*xss[6]
         p8 = p4*xss[7]
-        
+
         in1x = (p2 <= self._x) & (self._x <= nelx)
         in1y = (p3 <= self._y) & (self._y <= p1)
         in2x = (p4 <= self._x) & (self._x <= p5)
@@ -44,13 +47,10 @@ class NewSplitTopology(Topology):
         topology = (in1x & in1y) | (in2x & in2y) | (in3x & in3y)
 
         self.topology = np.vstack((topology, np.flipud(topology)))
-        
-        
+
         ytip_norm = round(p1)
         self.xtip = 2 * self.a * nelx
         self.ytip = 2 * self.b * (ytip_norm - 0.05)
-        #self.xtip = 1e6 * (2 * self.a * nelx)
-        #self.ytip = 1e6 * (2 * self.b * (nely - 0.05))
-        
-        
-        
+
+
+
