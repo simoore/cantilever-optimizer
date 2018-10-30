@@ -1,9 +1,3 @@
-import sys
-
-civ_path = 'D:\\doc\\Google Drive\\Github\\micro-fem'
-if civ_path not in sys.path:
-    sys.path.append(civ_path)
-    
 import numpy as np
 import microfem
 
@@ -13,15 +7,13 @@ class FrequencyProblem(object):
     def __init__(self, params, topology_factory):
         
         self.f0 = params['f0']
-        self.a = 5e-6
-        self.b = 5e-6
         self.topology_factory = topology_factory
         self.material = microfem.SoiMumpsMaterial()
     
     
     @property
     def ind_size(self):
-        return (self.topology_factory.ind_size + 1)
+        return (self.topology_factory.ind_size)
     
     
     @property
@@ -30,30 +22,13 @@ class FrequencyProblem(object):
     
     
     def objective_function(self, xs):
-        """
-        Evaluates the objective function. The objective function calculates 
-        the ratio between the dynamic stiffness of the flexural modes with
-        respect to the first.
-        
-        Parameters
-        ----------
-        xs : list of floats      
-            The optimization design variables for a solution.
-            
-        Returns
-        -------
-        : float       
-            The evaluated objective for the solution.
-        """
-        top_vars, scale_var = xs[0:-1], xs[-1]
-        self.topology_factory.update_topology(np.array(top_vars))
+
+        self.topology_factory.update_topology(xs)
         
         if self.topology_factory.is_connected is True:
             
-            topology = self.topology_factory.topology
-            a = self.a * abs(scale_var)
-            b = self.b * abs(scale_var)
-            cantilever = microfem.Cantilever(topology, a, b)
+            params = self.topology_factory.get_params()
+            cantilever = microfem.Cantilever(*params)
             fem = microfem.PlateFEM(self.material, cantilever)
             w, _, _ = fem.modal_analysis(1)
             f = np.asscalar(np.sqrt(w) / (2*np.pi))
@@ -66,13 +41,9 @@ class FrequencyProblem(object):
     
     def console_output(self, xopt, image_file):
         
-        top_vars, scale_var = xopt[0:-1], xopt[-1]
-        self.topology_factory.update_topology(top_vars)
-        topology = self.topology_factory.topology
-        a = self.a * abs(scale_var)
-        b = self.b * abs(scale_var)
-        print('The element dimensions are (um): %gx%g' % (2e6*a, 2e6*b))
-        cantilever = microfem.Cantilever(topology, a, b)
+        self.topology_factory.update_topology(xopt)
+        params = self.topology_factory.get_params()
+        cantilever = microfem.Cantilever(*params)
         microfem.plot_topology(cantilever, image_file)
         
         if self.topology_factory.is_connected is True:

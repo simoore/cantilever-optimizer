@@ -7,25 +7,6 @@ Bezier = namedtuple('Bezier', 'eu1 eu2 ex1 ex2 ey1 ey2 rx ry')
 
 
 class BezierTopology(object):
-    """
-    This topology optimization factory automatrically applies symmetry and
-    connectivity between the base and tip are guaranteed.
-
-    V2: Formats the topology class to have the standard interface. This
-    includes scaling of the finite element size.
-
-    Public Attributes
-    -----------------
-    self.ind_size : int
-        The number of parameters that describe the topology.
-    self.topology : 2d binary ndarray
-        A mesh that descibes whether an element is solid or void.
-    self.is_connected : bool
-        True if the topology is connected.
-    self.connection_penalty : float
-        A suggest penalization value to use for unconstrained optimization
-        algorithms if the topology is unnconnected.
-    """
 
     def __init__(self, params):
 
@@ -52,15 +33,6 @@ class BezierTopology(object):
 
 
     def update_topology(self, chromosome):
-        """
-        Coverts the bezier cantilever chromosome to the cantilever topology
-        to be processed by a finite element analysis.
-
-        Parameters
-        ----------
-        chromosome : 1D ndarray of float
-            The parametization of the cantilever.
-        """
 
         half = np.zeros(self._dim_elems)
         fixed = self._chromosome_scaling(chromosome)
@@ -153,13 +125,7 @@ class BezierTopology(object):
         scaled = self._mscale * chromosome + self._bscale
         _, nely = self._dim_elems
 
-        # Add excluded parameters back in before topology generation.
-        # The y-coord of the first point is at the base.
-        # The x-coord of the last point is at the tip.
-        # The y-coord of the last point is at the tip.
         scaled[1] = 0
-        #scaled[-2] = 0
-        #scaled[-1] = nely - 1
         scaled[-3] = 0
         scaled[-2] = nely - 1
 

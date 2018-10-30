@@ -1,8 +1,3 @@
-"""
-Version 2: incorporates a new way of templating optimization problems.
-Version 3: rework how multiobjective optimization is incorporated.
-Version 4: removed the multiobjective optimization.
-"""
 import random
 import numpy as np
 import array
@@ -34,7 +29,7 @@ from cantileveroptimizer.problems import FastCantileverProblem
 
 
 def main():
-    filename = 'examples/bimodal-v-shaped.yaml'
+    filename = 'examples/frequency-split.yaml'
     params = load_parameters(filename)
     opt = TopologyOptimizer(params)
     opt.execute()

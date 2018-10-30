@@ -1,12 +1,12 @@
 # cantilever-optimizer
 
 This code is designed for the topology optimization of cantilever structures
-targeted for use in atomic force microscopy. The code is structure to account
+targeted for use in atomic force microscopy. The code is structured to account
 for a range of different optimization problems and topology parameterizations.
 The genetic algorithm is used to search for the optimal solution.
 
-To use the software, first edit the `main()` function in `main_deap.py` shown 
-below. Set the `filename` variable to point to a YAML configuration file which 
+To use the software, first edit the `main()` function in `main_deap.py` (shown 
+below). Set the `filename` variable to point to a YAML configuration file which 
 describes the problem. Then execute the script. To re-examine previous 
 solutions, comment out the line `opt.execute()` and uncomment the line 
 `opt.load_solution()`.
@@ -30,7 +30,7 @@ the above example.
 * `fast-new-compact-design.txt` -- The parameters of the optimal solution in a
     text format.
 * `fast-new-compact-image.png` -- An image of the optimal topology.
-8 `fast-new-compact-records.txt` -- Lists the cost function at each iteration 
+* `fast-new-compact-records.txt` -- Lists the cost function at each iteration 
     of the optimization routine.
 
 To re-execute the optimization the `.npy` output from the previous execution
@@ -71,22 +71,31 @@ The parameters are:
 * `probelm_params` -- A set of parameters associated with a given problem.
 
 A set of examples are provided in the example folder for the three problems
-and eight topolgies already provided with this code. To add additional problems
-and topologies create the class with the appropriate interface and modify
-the functions in `main_deap.py` called `init_problem()` and `init_topology()`
-to link the classes with a keyword.
+and sixteen topolgies already provided with this code. To add additional 
+problems and topologies create the class with the appropriate interface and 
+modify the functions in `main_deap.py` called `init_problem()` and 
+`init_topology()` to link the classes with a keyword.
 * ``
 
 # Problems
 
 ## API for Problem Classes
 
-Public Attributes:
-* `self.name` -- A string containing the name of the problem.
-* `self.ind_size` -- The number of optimization parameters for the problem.
+#### Public Attributes
 
-Functions:
-* 
+`self.name` 
+
+A string containing the name of the problem.
+
+`self.ind_size`
+
+The number of optimization parameters for the problem.
+
+#### Functions
+
+`objective_function(self, xs)`
+
+`xs` is a rank 1 numpy array containing the parameters of optimizationnnnn
 
 Constructor:
 
@@ -99,7 +108,7 @@ first mode (if it is flexural) for a given stiffness constraint.
 The parameters are:
 * `k1` -- The stiffness constraint.
 
-## The Bimodal Cantilever
+## bimodal
 
 Bimodal cantilevers examine the dynamics of the first three modes and seek to
 set the frequency and/or stiffness of the first two flexural modes. If there
@@ -113,8 +122,13 @@ as follows.
 * `frequency_minimization` -- Minimines the frequency of mode 2 for a given 
     frequency of mode 1.
 
-## The Frequency
+## frequency_placement
 
+This problem seeks to place the frequency of the first mode of the cantilever.
+
+#### Parameters
+
+* `f0` -- The frequency setpoint of the first mode.
 
 # Topologies
 

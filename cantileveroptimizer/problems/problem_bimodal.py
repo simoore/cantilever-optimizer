@@ -3,12 +3,6 @@ import microfem
 
 
 class BimodalProblem(object):
-    """
-    Public Attributes
-    -----------------
-    self.ind_size
-    self.name
-    """
 
     def __init__(self, params, topology_factory):
 
@@ -34,7 +28,6 @@ class BimodalProblem(object):
         if params['type'] not in funcs:
             raise ValueError('Bimodal type parameter invalid.')
         self.evaluation = funcs[params['type']]
-
 
     def objective_function(self, xs):
 

@@ -8,12 +8,20 @@ class RegularSplitTopology(object):
         self._dim_elems = (params['nelx'], params['nely'])
         self._a0 = params['a0']
         self._b0 = params['b0']
-        self.ind_size = 8
         
         nelx, nely = self._dim_elems
         ii, jj = np.meshgrid(np.arange(nelx), np.arange(nely))
         self._x = ii.T + 0.5
         self._y = jj.T + 0.5
+        
+        self.ind_size = 8
+        self.topology = None
+        self.a = 0
+        self.b = 0
+        self.xtip = 0
+        self.ytip = 0
+        self.is_connected = True
+        self.connectivity_penalty = 0
         
     def get_params(self):
         return (self.topology, self.a, self.b, self.xtip, self.ytip)
@@ -45,11 +53,6 @@ class RegularSplitTopology(object):
         topology = (in1x & in1y) | (in2x & in2y) | (in3x & in3y)
 
         self.topology = np.vstack((topology, np.flipud(topology)))
-        self.is_connected = True
-        self.connectivity_penalty = 0
-        #cantilever = microfem.Cantilever(topology, self.a, self.b)
-        #microfem.plot_topology(cantilever)
-        
         self.xtip = 2 * self.a * nelx
         self.ytip = 2 * self.b * (nely - 0.05)
         

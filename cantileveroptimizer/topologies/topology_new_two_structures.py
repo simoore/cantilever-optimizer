@@ -2,26 +2,13 @@ import numpy as np
 
 
 class NewTwoStructuresTopology(object):
-    """
-    Public Attributes
-    -----------------
-    self.ind_size
-    self.a
-    self.b
-    self.topology
-    self.is_connected
-    self.connectivity_penalty
-    """
-    
+
     def __init__(self, params):
 
         self._dim_elems = (params['nelx'], params['nely'])
         self._a0 = params['a0']
         self._b0 = params['b0']
         self.ind_size = 8
-        
-        
-        self._dim_elems = (params['nelx'], params['nely'])
         
         # Initialize the grid.
         nelx, nely = self._dim_elems
@@ -39,22 +26,11 @@ class NewTwoStructuresTopology(object):
         self.xtip = nelx
         self.ytip = nely
     
+    def get_params(self):
+        return (self.topology, self.a, self.b, self.xtip, self.ytip)
     
-    @staticmethod
-    def _dimension(val, scale, max_, min_):
-        
-        vali = round(float(scale) * val)
-        #print(vali, val, min_, max_)
-        vali = max_ if vali > max_ else min_ if vali < min_ else vali
-        return vali
-
-
     def update_topology(self, xs):
-        """
-        This method takes the design variables of the structure to produce the
-        discretized topology that is used for finite element modeling.
-        """
-        
+
         # Range of xs is [-1,1], make range [0,1].
         xss = [0.5*x + 0.5 for x in xs]
         nelx, nely = self._dim_elems

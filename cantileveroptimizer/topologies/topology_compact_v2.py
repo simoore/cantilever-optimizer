@@ -34,7 +34,6 @@ class CompactTopology(object):
         self._ratio = params['support_ratio']
         self._a0 = params['a0']
         self._b0 = params['b0']
-        self._old_scale = params['old_scale']
         
         funcs = {'mask1': self._init_mask1,
                  'mask2': self._init_mask2}
@@ -51,6 +50,11 @@ class CompactTopology(object):
         
         self.a = 0
         self.b = 0
+        self.xtip = 0
+        self.ytip = 0
+        self._connectivity_penalty = 0
+        self._is_connected = False
+        self._topology = None
 
     @property
     def topology(self):
@@ -82,10 +86,7 @@ class CompactTopology(object):
         """
         
         top_vars, scale_var = xs[0:-1], xs[-1]
-        if self._old_scale is True:
-            scale_var = abs(scale_var) if abs(scale_var) > 0.05 else 0.05
-        else:
-            scale_var = scale_var if scale_var > 0.05 else 0.05
+        scale_var = scale_var if scale_var > 0.05 else 0.05
         self.a = self._a0 * scale_var
         self.b = self._b0 * scale_var
 
@@ -214,27 +215,6 @@ class CompactTopology(object):
         self._mask = np.hstack((base, tip))
         
         
-#    def _init_mask(self):
-#        
-#        if self._mask_type == 'None':
-#            self._mask = None
-#            return
-#        
-#        nelx, nely = self._dim_elems
-#        if self._mask_type == 'mask1':
-#            base_y = round(0.75 * nely)
-#        else:
-#            base_y = round(0.5 * nely)
-#        tip_y = nely - base_y
-#        tip1_x = round(0.5 * nelx)
-#        tip2_x = nelx - tip1_x
-#        base = np.ones((nelx, base_y))
-#        tip1 = np.zeros((tip1_x, tip_y))
-#        tip2 = np.ones((tip2_x, tip_y))
-#        tip = np.vstack((tip1, tip2))
-#        self._mask = np.hstack((base, tip))
-        
-         
     def _apply_regularization(self, topology, mask=None, symmetry=True, tip=True):
         """
         The topology is an arbitary 2D design. This function applies a mask to 

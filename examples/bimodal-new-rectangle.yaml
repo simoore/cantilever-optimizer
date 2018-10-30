@@ -1,0 +1,17 @@
+---
+generations: 60
+num_individuals: 300
+topology_class: new-rectangle
+topology_params:
+    nelx: 40
+    nely: 80
+    a0: 5.0
+    b0: 5.0
+problem_class: bimodal
+problem_params:
+    f1: 0.0
+    f2: 0.0
+    k1: 50.0
+    k2: 0.0
+    type: k1_place_k2_min
+...

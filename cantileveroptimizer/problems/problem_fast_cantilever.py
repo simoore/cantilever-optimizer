@@ -1,16 +1,8 @@
 import numpy as np
 import microfem
-#from analysis_plate_displacement import PlateDisplacement
-#from analysis_mode_identification import ModeIdentification
 
 
 class FastCantileverProblem(object):
-    """
-    Public Attributes
-    -----------------
-    self.ind_size
-    self.name
-    """
 
     def __init__(self, params, topology_factory):
 

@@ -2,16 +2,7 @@ import numpy as np
 
 
 class RegularTwoStructureTopology(object):
-    """
-    Public Attributes
-    -----------------
-    self.ind_size
-    self.a
-    self.b
-    self.topology
-    self.is_connected
-    self.connectivity_penalty
-    """
+
     def __init__(self, params):
 
         self._dim_elems = (params['nelx'], params['nely'])
@@ -38,10 +29,6 @@ class RegularTwoStructureTopology(object):
         return (self.topology, self.a, self.b, self.xtip, self.ytip)
 
     def update_topology(self, xs):
-        """
-        This method takes the design variables of the structure to produce the
-        discretized topology that is used for finite element modeling.
-        """
         
         scale_a = xs[0] if xs[0] > 0.05 else 0.1
         self.a = self._a0 * scale_a

@@ -4,13 +4,7 @@ import numpy as np
 class PowerTopology(object):
 
     def __init__(self, params):
-        """
-        params['nelx']: The number of elements in the x-direction for one-half
-                        of the cantilever. Symmetry is applied which doubles
-                        the number of elements in the x-direction.
-        params['nely']: The number of elements from the base to the tip of the
-                        cantilever.
-        """
+
         self._dim_elems = (params['nelx'], params['nely'])
         self._a0 = params['a0']
         self._b0 = params['b0']
