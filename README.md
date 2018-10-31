@@ -59,16 +59,16 @@ problem_params:
 ```
 
 The parameters are:
-* `generations` -- The number of iterations of the genetic algorithm to 
+* `generations` - The number of iterations of the genetic algorithm to 
     execute.
-* `num_individuals` -- The number of solutions per iteration to examine in the 
+* `num_individuals` - The number of solutions per iteration to examine in the 
     genetic algorithm.
-* `topology_class` -- A keyword linked to a particular topology 
+* `topology_class` - A keyword linked to a particular topology 
     parameterization.
-* `topology_params` -- A dictionary of parameters assocaited with a given 
+* `topology_params` - A dictionary of parameters assocaited with a given 
     topology.
-* `problem_class` -- A keyword linked to the optimization problem.
-* `probelm_params` -- A set of parameters associated with a given problem.
+* `problem_class` - A keyword linked to the optimization problem.
+* `probelm_params` - A set of parameters associated with a given problem.
 
 A set of examples are provided in the example folder for the three problems
 and sixteen topolgies already provided with this code. To add additional 
@@ -79,76 +79,166 @@ modify the functions in `main_deap.py` called `init_problem()` and
 
 # Problems
 
-## API for Problem Classes
+Problem classes define and compute the cost function used to evaluate a
+solution. 
+
+
+## Interface for Problem Classes
+
+Use the following interface to added additional problems to the code.
 
 #### Public Attributes
 
-`self.name` 
-
-A string containing the name of the problem.
-
-`self.ind_size`
-
-The number of optimization parameters for the problem.
+* `self.name` - A string containing the name of the problem.
+* `self.ind_size` - The number of optimization parameters for the problem.
 
 #### Functions
 
-`objective_function(self, xs)`
+`objective_function(self, xs)` - This function is called to evaluate the cost
+    function. `xs` is a rank 1 numpy array containing the optimization 
+    parameters. Returns the evaluated cost function.
+`console_output(self, xopt, image_file)` - This function prints the details
+    of a solution to the console. `xopt` is the optimization parameters.
+    `image_file` is a string containing a filename to save an image of the 
+    topology. 
 
-`xs` is a rank 1 numpy array containing the parameters of optimizationnnnn
+#### Constructor
 
-Constructor:
+`__init__(self, params, topology_factory)` - The constructor recieves the
+    dictionary `params` which contains the `problem_params` from the YAML
+    config file. `topology_factory` is the object that will generate the 
+    parameters for the finite element model.
 
 
-## fast_cantilever
+## Built-in Problem: fast_cantilever
 
 The fast cantilever seeks to find the highest resonance frequency of the
 first mode (if it is flexural) for a given stiffness constraint.
 
 The parameters are:
-* `k1` -- The stiffness constraint.
+* `k1` - The stiffness constraint.
 
-## bimodal
+
+## Built-in Problem: bimodal
 
 Bimodal cantilevers examine the dynamics of the first three modes and seek to
 set the frequency and/or stiffness of the first two flexural modes. If there
 is only one flexural mode the cost function is penalized. The parameters are
 as follows.
 
-* `stiffness_placement` -- Places the stiffness of mode 1 and mode 2 at given
-    values.
-* `frequency_placement` -- Place the frequency of mode 1 and mode 2 at given
-    values.
-* `frequency_minimization` -- Minimines the frequency of mode 2 for a given 
-    frequency of mode 1.
+The parameters are:
+* `f1` - Frequency of the first flexural mode.
+* `f2` - Frequency of the second flexural mode.
+* `k1` - Stiffness of the first flexural mode.
+* `k2` - Stiffness of the second flexural mode.
+* `type` - Selects from several different cost functions.
 
-## frequency_placement
+The type parameter can be one of the following values. Not all cost functions
+use all the parameters above.
+* `stiffness_placement` - Places the frequency of mode 1 and the stiffness of
+    mode 2 at given values.
+* `frequency_placement` - Place the frequency of mode 1 and mode 2 at given
+    values.
+* `frequency_minimization` - Minimines the frequency of mode 2 for a given 
+    frequency of mode 1.
+* `stiffness_minimization` - Minimizes the stiffness of mode 2 for a given
+    frequency of mode 1.
+* `stiffness_maximization` - Maximizes the stiffness of mode 2 for a given
+    frequency of mode 1.
+* `frequency_maximization` - Maximizes the frequency of mode 2 for a given
+    frequency of mode 1.
+* `k1_k2_place` - Places the stiffness of mode 1 and mode 2 at given
+    values.
+* `k1_place_k2_min` - Places the stiffness of mode 1 and minimizes the
+    stiffness of mode 2.s
+    
+    
+## Built-in Problem: frequency_placement
 
 This problem seeks to place the frequency of the first mode of the cantilever.
 
-#### Parameters
-
+The parameters are:
 * `f0` -- The frequency setpoint of the first mode.
+
 
 # Topologies
 
-## API for Topology Classes
+Topology classes take the a set of optimization parameters and produce the
+parameters for the finite element model to analyze the structure.
 
-## new-compact
+## Interface for Topology Classes
 
-Parameterizes the topology with a level set method. Unconnected structures
-are possible.
+#### Public Attributes
 
-The parameters are:
+* `self.topology` - A binary matrix describing the mesh of the structure.
+* `self.ind_size` - The number of parameters defining the topology.
+* `self.a` - Half the element width (x-direction) in um.
+* `self.b` - Half the element length (y-direction) in um.
+* `self.xtip` - The mode shapes are normalized at this point (x-coord).
+* `self.ytip` - The mode shapes are normalized at this point (y-coord).
+* `self.is_connected` - True if the structure is valid.
+* `self.connectivity_penalty` - A value to return as the cost function if
+    unconnected.
+    
+#### Functions
+
+* `update_topology(self, xs)` - Updates the public attributes based on the
+    new optimization parameters `xs`.
+* `get_params(self)` - Returns a tuple of parameters that can be passed 
+    directly to the microfem Cantilever class.
+
+#### Constructor
+
+* `__init__(self, params)` - `params` is a dictionary containing the parameters
+    from the YAML config file.
+
+
+## Topology Classes
+
+The following keywords in the YAML config file select different topology 
+parameterizations.
+
+* `gaussian`
+* `bezier`
+* `rectangle`
+* `two_structure`
+* `split`
+* `stepped`
+* `vshaped`
+* `power`
+* `new-rectangle`
+* `new-split`
+* `new-vshaped`
+* `new-stepped`
+* `new-power`
+* `new-two-structures`
+* `new-bezier`
+* `new-compact`
+
+All classes have the following parameters:
+* `a0` - half the width of an element in the x-direction (um).
+* `b0` - half the width of an element in the y-direction (um).
+* `nelx` - Half the number of elements in the x-direction.
+* `nely` - The number of elements in the y-direction.
+
+The `new-compact` and `gaussian` classes have the following additional 
+parameters:
 * `support_ratio` -- 3.0
-* `nknx` -- The number of basis functions in the x-direction.
-* `nkny` -- The number of basis functions in the y-direction.
-* `nelx` -- Half the number of elements in the x-direction.
-* `nely` -- The number of elements in the y-direction.
-* `pcon1` -- 1.0e7
-* `pcon2` -- 1.0e3
-* `a0` -- half the width of an element in the x-direction (um).
-* `b0` -- half the width of an element in the y-direction (um).
+* `nknx` - The number of basis functions in the x-direction.
+* `nkny` - The number of basis functions in the y-direction.
+* `pcon1` - 1.0e7
+* `pcon2` - 1.0e3
+
+The `gaussian` class has the following addition parameter:
+* `mask` - (None | mask1 | mask2) - Masks remove elements from the top corners
+    of the design space.
+    
+The `bezier` and `new-bezier` classes have the following additional parameter:
+* `ncurves` - The number of curves to parameterize the topology.
+
+The `new-bezier` class has the following additional parameter:
+* `crop` - If true elements whose y-coordinate are above the tip are cropped.
+
 
 # Extensions
 
