@@ -75,7 +75,9 @@ and sixteen topolgies already provided with this code. To add additional
 problems and topologies create the class with the appropriate interface and 
 modify the functions in `main_deap.py` called `init_problem()` and 
 `init_topology()` to link the classes with a keyword.
-* ``
+
+This code relies on the FEA from the library:
+https://github.com/simoore/micro-fem
 
 # Problems
 
@@ -239,6 +241,18 @@ The `bezier` and `new-bezier` classes have the following additional parameter:
 The `new-bezier` class has the following additional parameter:
 * `crop` - If true elements whose y-coordinate are above the tip are cropped.
 
+
+# References
+
+This code was used to develop solutions published in the following articles:
+
+S. I. Moore, M. G. Ruppert, Y. K. Yong
+Arbitrary placement of AFM cantilever higher eigenmodes using structural optimization (Inproceeding)
+International Conference on Manipulation, Automation and Robotics at Small Scales (MARSS), 2018.
+
+S. I. Moore, Y. K. Yong
+Design and Characterization of Cantilevers for Multi-Frequency Atomic Force Microscopy (Journal Article)
+Micro & Nano Letters, 12 (5), pp. 315-320, 2017.
 
 # Extensions
 
